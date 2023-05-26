@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.home.model.mapper.MemberMapper">
+
+	<select id="login" parameterType="member" resultType="member">
+		select
+		user_id userid, user_name username,
+		user_pwd userpwd, email, join_date joindate
+		from
+		member
+		where user_id =
+		#{userid} and user_pwd = #{userpwd}
+	</select>
+
+	<select id="listMember" resultType="member">
+		select user_id userid, user_name username,
+		user_pwd, email, join_date
+		from member
+	</select>
+
+	<insert id="registMember" parameterType="member">
+		insert into
+		member(user_id, user_name, user_pwd, email)
+		values (#{userid},
+		#{username}, #{userpwd}, #{email})
+	</insert>
+
+	<update id="modifyMember" parameterType="member">
+		update member
+		set user_id
+		= #{userid}, user_name =
+		#{username}, user_pwd = #{userpwd}, email =
+		#{email}, join_date =
+		#{joindate}
+		where user_id =
+		#{userid}
+	</update>
+
+	<delete id="deleteMember" parameterType="String">
+		delete from member
+		where
+		user_id = #{userid}
+	</delete>
+
+	<select id="detailMember" parameterType="String"
+		resultType="member">
+		select user_id userid, user_name username,
+		user_pwd userpwd, email, join_date joindate
+		from
+		member
+		where user_id = #{userid}
+	</select>
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.home.model.mapper.HouseMapper">
+
+	<select id="getSido" resultType="sidoGugunCode">
+		select distinct left
+		(dongCode,2) sidoCode, sidoName
+		from dongcode
+		order by sidoCode;
+	</select>
+
+	<select id="getGugunInSido" parameterType="string"
+		resultType="sidoGugunCode">
+		select distinct left (dongCode,5) gugunCode, gugunName
+		from
+		dongcode
+		where left(dongCode,2) = #{sidoCode} and dongName is not null
+		order by gugunName;
+	</select>
+
+	<select id="getDongInGugun" parameterType="string"
+		resultType="sidoGugunCode">
+		select distinct left (dongCode,8) dongCode, dongName
+		from
+		dongcode
+		where left(dongCode, 5) = #{gugunCode} and dongName is not null
+		order by dongName;
+	</select>
+
+	<select id="getAptList" parameterType="hashmap"
+		resultType="house">
+		select hd.no, hi.aptCode, hi.apartmentName aptName, hd.dealYear ,
+		hd.dealMonth, hi.lat,
+		hi.lng, hd.dealAmount price
+		from housedeal hd join
+		houseinfo hi
+		on
+		hd.aptCode = hi.aptCode
+		<where>
+			<if test="searchWord != 'none'">and hi.apartmentName like concat("%", #{searchWord}, "%") </if>
+			<if test="dealY != 'none'">and hd.dealYear = #{dealY} </if>
+			<if test="dealM != 'none'"> and hd.dealMonth = #{dealM} </if>
+			and hi.dongCode like concat(#{regCode}, "%")
+		</where>
+		order by aptName, dealYear desc, dealMonth desc limit 1000
+	</select>
+
+	<select id="getDetailHouse" parameterType="string"
+		resultType="HouseDetail">
+		select hd.area, hd.floor, hi.buildYear, hi.roadName, hi.roadNameBonbun
+		from houseinfo hi join housedeal hd
+		on hi.aptCode = hd.aptCode
+		where
+		hd.no = #{aptCode}
+	</select>
+</mapper>
